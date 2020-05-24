@@ -13,22 +13,45 @@ class Node
 
 class List
 {
+    Node* head;
+    Node* tail;
+    Node* cursor;
+    int size;
 
+    public: 
+        List():head(nullptr), tail(nullptr), cursor(nullptr), size(0){} // default constructor, no arguments
+        ~List();
+        void push_front(int data);
+        void print();
+        int  len() { return size; }
 };
 
-Node* push_front(int d) 
-{
-    Node* temp = new Node;
-
-    temp -> data = d;
-    temp -> next = nullptr;
-    return temp;
+List::~List()
+{    
+    cout << "Calling List destructor.." << endl;
+    /*
+    for(cursor = head; cursor != nullptr; cursor = head->next)
+    {
+        cout << cursor << endl;
+        //delete cursor;
+    }
+    */
+    
 }
 
-void print(const Node* start)
+void List::push_front(int data = 0)
+{ 
+    Node* new_node = new Node(data, head);  //point new node to current head 
+    if(head == nullptr)
+        tail = new_node;   //firts element point tail to node adress
+    head = new_node;       //point head to new node
+    size++;
+} 
+
+void List::print()
 {
     cout << "HEAD:";
-    for(Node* c = const_cast<Node* const>(start); c != nullptr; c = c->next)
+    for(Node* c = head; c != nullptr; c = c->next)
         cout << c << "(" << c->data << ")->";
     cout << "###" << endl;
 }
@@ -42,21 +65,35 @@ Node* find(const Node* start, const int d)
     return nullptr;
 }
 
-int main()
+void splitList(node* start, node** ll1, node** ll2) 
 {
-    Node* c = push_front(9);    //buliding list, first node
-    const Node* head = c;       //saving head of the list
+   //similar to flyod's tortoise algorithm
+   node* slow = start;
+   node* fast = start -> next;
 
-    for(int i = 8; i >= 0; i--)
-    {   
-        Node* t = push_front(i); //temporaly node
-        c->next = t;
-        c = t;
-    }
+   while(fast != nullptr) 
+   {
+      fast = fast -> next;
+      if(fast != nullptr) 
+      {
+         slow = slow -> next;
+         fast = fast -> next;
+      }
+   }
 
-    print(head);
+   *ll1 = start;
+   *ll2 = slow -> next;
+   //spliting
+   slow -> next = nullptr;
+}
 
-    cout << find(head, 4) << endl;
-    //k
+
+int main()
+{   
+    List l;
+    for(int i = 0; i <= 8; i++)
+        l.push_front(i);
+    l.print();
+    cout << l.len() << endl;
     return 0;
 }
